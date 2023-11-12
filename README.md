@@ -1,8 +1,9 @@
-# aw-watcher-music
+# Activity Watcher Extension for Youtube Music
 
 Modified activity-watcher-web for Youtube Music. 
 
 I run Youtube Music using FirefoxPWA. 
+- To get it to work on Firefox Pwa, src/eventPage.js needs to be changed getCurrentTabs
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nglaklhklhcoonedhgnpgddginnjdadi.svg)][chrome]
 [![Mozilla Add-on](https://img.shields.io/amo/v/aw-watcher-web.svg)][firefox]

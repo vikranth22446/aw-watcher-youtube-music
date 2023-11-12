@@ -13,34 +13,126 @@ var max_check_interval = 60;
 var heartbeat_interval = 20;
 var heartbeat_pulsetime = heartbeat_interval + max_check_interval;
 
+
+// Global variable to store current music information
+var currentMusicInfo = { artist: '', songURL: '', title: '' };
+
+// Function to handle the received music information
+function handleMusicInfo(musicInfo) {
+  // Update the global variable with the current music information
+  currentMusicInfo = musicInfo;
+  // console.log('Artist:', musicInfo.artist);
+  // console.log('Song URL:', musicInfo.songURL);
+
+  // You can perform further actions with the information here
+}
+
+// Listen for messages from content scripts
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.type === 'ytMusicInfo') {
+    handleMusicInfo(message.data);
+  }
+});
+
+
+
 function getCurrentTabs(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
   var queryInfo = {
-    active: true,
-    currentWindow: true,
+    audible: true,
   };
 
   chrome.tabs.query(queryInfo, function (tabs) {
-    // TODO: Won't necessarily work when code is run as a background plugin instead of as a popup
-    // chrome.tabs.query invokes the callback with a list of tabs that match the
-    // query. When the popup is opened, there is certainly a window and at least
-    // one tab, so we can safely assume that |tabs| is a non-empty array.
-    // A window can only have one active tab at a time, so the array consists of
-    // exactly one tab.
     callback(tabs);
   });
 }
 
 var last_heartbeat_data = null;
 var last_heartbeat_time = null;
+function getYTMusicTitle() {
+  // Get the element with the class "ytmusic-player-bar"
+  var playerBar = document.querySelector('.ytmusic-player-bar');
+
+  // Check if the playerBar element exists before proceeding
+  if (!playerBar) {
+    console.error('Element with class "ytmusic-player-bar" not found');
+    return '';
+  }
+
+  // Get the element with the class "title" inside the playerBar
+  var titleElement = playerBar.querySelector('.title');
+
+  // Check if the titleElement exists before accessing its title
+  if (!titleElement) {
+    console.error('Element with class "title" not found inside .ytmusic-player-bar');
+    return '';
+  }
+
+  // Return the title of the element
+  return titleElement.title || ''; // Return an empty string if the title attribute is not set
+}
+
+function getYTMusicArtist() {
+  // Get the element with the class "ytmusic-player-bar"
+  var playerBar = document.querySelector('.ytmusic-player-bar');
+
+  // Check if the playerBar element exists before proceeding
+  if (!playerBar) {
+    console.error('Element with class "ytmusic-player-bar" not found');
+    return '';
+  }
+
+  // Get the element with the class "yt-formatted-string" inside the playerBar for artist
+  var artistElement = playerBar.querySelector('.yt-formatted-string');
+
+  // Check if the artistElement exists before accessing its text
+  if (!artistElement) {
+    console.error('Element with class "yt-formatted-string" not found inside .ytmusic-player-bar');
+    return '';
+  }
+
+  // Return the text of the element
+  return artistElement.textContent || artistElement.innerText || ''; // Use whichever is available
+}
+
+function getYTMusicSongURL() {
+  // Get the element with the class "ytmusic-player-bar"
+  var playerBar = document.querySelector('.ytmusic-player-bar');
+
+  // Check if the playerBar element exists before proceeding
+  if (!playerBar) {
+    console.error('Element with class "ytmusic-player-bar" not found');
+    return '';
+  }
+
+  // Get the element with the class "yt-formatted-string" inside the playerBar for song URL
+  var songURLElement = playerBar.querySelector('.yt-formatted-string');
+
+  // Check if the songURLElement exists before accessing its URL
+  if (!songURLElement) {
+    console.error('Element with class "yt-formatted-string" not found inside .ytmusic-player-bar');
+    return '';
+  }
+
+  // Return the URL of the element (assuming it has a URL attribute)
+  return songURLElement.url || ''; // Adjust based on the actual structure of your HTML
+}
+
 
 function heartbeat(tab, tabCount) {
   //console.log(JSON.stringify(tab));
   var now = new Date();
+  var title = currentMusicInfo.title;
+  var musicArtist = currentMusicInfo.artist;
+  var musicSongURL = currentMusicInfo.songURL;
+  
   var data = {
     url: tab.url,
-    title: tab.title,
+    tab_title: tab.title,
+    title: title,
+    artist: musicArtist,
+    song_url: musicSongURL,
     audible: tab.audible,
     incognito: tab.incognito,
     tabCount: tabCount,
@@ -161,32 +253,7 @@ function popupRequestReceived(msg) {
 
 async function askConsentNeeded() {
   // Source for compatibility check: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension#handling_api_differences
-  try {
-    if (typeof browser.runtime.getBrowserInfo != "function") {
-      return false;
-    }
-  } catch (e) {
-    return false;
-  }
-  let browserInfo = await browser.runtime.getBrowserInfo();
-  if (browserInfo.name != "Firefox") {
-    return false;
-  }
-
-  // Mozilla Addons doesn't allow bypassing the consent dialog through managed storage,
-  // so it is hard-coded to be disabled (you need to fork and self-distribute if you want to use this).
-  const supportEnterprisePolicy = false;
-  if (supportEnterprisePolicy) {
-    try {
-      if (await browser.storage.managed.get("consentOfflineDataCollection")) {
-        return false;
-      }
-    } catch (e) {
-      console.error("managed storage error: ", e);
-      return true;
-    }
-  }
-  return true;
+  return false;
 }
 
 function getConsentThenStart() {

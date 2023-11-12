@@ -1,32 +1,34 @@
 {
   "manifest_version": 2,
 
-  "name": "ActivityWatch Web Watcher",
+  "name": "ActivityWatch Music Watcher",
   "short_name": "ActivityWatch",
   "description": "Log the current tab and your browser activity with ActivityWatch.",
   "version": "0.4.8",
   "icons": {
     "128": "media/logo/logo-128.png"
   },
-
   "browser_action": {
     "default_icon": "media/logo/logo-128.png",
     "default_popup": "static/popup.html"
   },
-
   "browser_specific_settings": {
     "gecko": {
       "id": "{ef87d84c-2127-493f-b952-5b4e744245bc}"
     }
   },
-
+  "content_scripts": [
+    {
+      "matches": ["*://music.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
   "background": {
     "scripts": [
         "out/app.js"
     ],
     "persistent": false
   },
-
   "permissions": [
     "tabs",
     "alarms",

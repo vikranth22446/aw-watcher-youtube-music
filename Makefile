@@ -2,15 +2,15 @@
 
 # This is what Google and Mozilla wants us to upload when we release a new version to the Addon "store"
 build: install
-	npm run build
+	bun run build
 	make aw-watcher-web.zip
 
 install:
-	npm ci
-	(cd aw-client-js; npm ci; npm run compile)
+	bun install
+	(cd aw-client-js; bun install; bun run compile)
 
 update:
-	npm run build
+	bun run build
 
 clean:
 	rm -rf node_modules build
@@ -18,7 +18,7 @@ clean:
 
 aw-watcher-web.zip: out/app.js
 	rm -f $@
-	zip -r -FS $@ manifest.json static/ out/ media/logo/logo-128.png media/banners/banner.png
+	zip -r -FS $@ manifest.json content.js static/ out/ media/logo/logo-128.png media/banners/banner.png
 
 # To build a source archive, wanted by Mozilla reviewers. Include media subdir.
 srczip:

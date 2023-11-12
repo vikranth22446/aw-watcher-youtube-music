@@ -40,7 +40,7 @@ var client = {
     client.browserName = getBrowserName();
     // Check if in dev mode
     chrome.management.getSelf(function(info) {
-      client.testing = info.installType === "development";
+      client.testing = false;
       console.log("testing: " + client.testing);
 
       client.awc = new AWClient("aw-client-web", {testing: client.testing});
@@ -52,7 +52,7 @@ var client = {
   },
 
   getBucketId: function () {
-    return "aw-watcher-web-" + client.browserName.toLowerCase();
+    return "aw-watcher-music-" + client.browserName.toLowerCase();
   },
 
   updateSyncStatus: function(){
@@ -63,13 +63,13 @@ var client = {
   },
 
   createBucket: function(){
-    if (this.testing === null)
-      return;
+    // if (this.testing === null)
+    //   return;
     // TODO: We might want to get the hostname somehow, maybe like this:
     // https://stackoverflow.com/questions/28223087/how-can-i-allow-firefox-or-chrome-to-read-a-pcs-hostname-or-other-assignable
     var bucket_id = this.getBucketId();
     var eventtype = "web.tab.current";
-    var hostname = "unknown";
+    var hostname = "macbook";
 
     function attempt() {
       return client.awc.ensureBucket(bucket_id, eventtype, hostname)
@@ -85,8 +85,8 @@ var client = {
   },
 
   sendHeartbeat: function(timestamp, data, pulsetime) {
-    if (this.testing === null)
-      return;
+    // if (this.testing === null)
+    //   return;
 
     var payload = {
         "data": data,

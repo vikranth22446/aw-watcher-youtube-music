@@ -1,4 +1,8 @@
-# aw-watcher-web
+# aw-watcher-music
+
+Modified activity-watcher-web for Youtube Music. 
+
+I run Youtube Music using FirefoxPWA. 
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nglaklhklhcoonedhgnpgddginnjdadi.svg)][chrome]
 [![Mozilla Add-on](https://img.shields.io/amo/v/aw-watcher-web.svg)][firefox]

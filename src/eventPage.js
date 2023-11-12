@@ -15,7 +15,7 @@ var heartbeat_pulsetime = heartbeat_interval + max_check_interval;
 
 
 // Global variable to store current music information
-var currentMusicInfo = { artist: '', songURL: '', title: '' };
+var currentMusicInfo = { artist: '', songURL: '', title: '', channelURL: '', songURL: '', genre: ''};
 
 // Function to handle the received music information
 function handleMusicInfo(musicInfo) {
@@ -126,13 +126,19 @@ function heartbeat(tab, tabCount) {
   var title = currentMusicInfo.title;
   var musicArtist = currentMusicInfo.artist;
   var musicSongURL = currentMusicInfo.songURL;
-  
+  var genre = currentMusicInfo.genre;
+  var channelURL = currentMusicInfo.channelURL;
+
   var data = {
     url: tab.url,
     tab_title: tab.title,
+    
     title: title,
     artist: musicArtist,
     song_url: musicSongURL,
+    channelURL:channelURL,
+    genre: genre,
+
     audible: tab.audible,
     incognito: tab.incognito,
     tabCount: tabCount,

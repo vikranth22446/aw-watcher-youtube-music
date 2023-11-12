@@ -3,28 +3,28 @@
 // Function to extract music information from the YouTube Music page
 function convertToCommaSeparatedList(selector) {
     var element = document.querySelector(selector);
-  
+
     if (element) {
-      // Extract text content and remove leading/trailing whitespaces
-      var textContent = element.textContent.trim();
-  
-      // Split the text content into an array using line breaks as the delimiter
-      var tagsArray = textContent.split('\n').map(function(tag) {
-        // Remove leading/trailing whitespaces from each tag
-        return tag.trim();
-      });
-  
-      // Filter out empty elements
-      var nonEmptyTagsArray = tagsArray.filter(function(tag) {
-        return tag !== '' && tag !== 'All' && tag !== 'Familiar' && tag !== 'Discover';
-      });
-  
-      // Join the non-empty array elements into a comma-separated string
-      var commaSeparatedList = nonEmptyTagsArray.join(', ');
-  
-      return commaSeparatedList;
+        // Extract text content and remove leading/trailing whitespaces
+        var textContent = element.textContent.trim();
+
+        // Split the text content into an array using line breaks as the delimiter
+        var tagsArray = textContent.split('\n').map(function (tag) {
+            // Remove leading/trailing whitespaces from each tag
+            return tag.trim();
+        });
+
+        // Filter out empty elements
+        var nonEmptyTagsArray = tagsArray.filter(function (tag) {
+            return tag !== '' && tag !== 'All' && tag !== 'Familiar' && tag !== 'Discover';
+        });
+
+        // Join the non-empty array elements into a comma-separated string
+        var commaSeparatedList = nonEmptyTagsArray.join(', ');
+
+        return commaSeparatedList;
     } else {
-      return null; // or any other value indicating that the element was not found
+        return null; // or any other value indicating that the element was not found
     }
 }
 function getGenre() {
@@ -33,11 +33,11 @@ function getGenre() {
 }
 function getTitleLinkHref() {
     var titleLinkElement = document.querySelector('.ytp-title a.ytp-title-link');
-  
+
     if (titleLinkElement) {
-      return titleLinkElement.href;
+        return titleLinkElement.href;
     } else {
-      return null; // or any other value indicating that the element was not found
+        return null; // or any other value indicating that the element was not found
     }
 }
 
@@ -48,7 +48,7 @@ function getYTMusicInfo() {
     var title = document.querySelector('.ytmusic-player-bar .title');
     var genre = getGenre();
 
-    var result = { artist: '', songURL: '', title: '', channelURL: '', songURL: '', genre: ''};
+    var result = { artist: '', songURL: '', title: '', channelURL: '', songURL: '', genre: '' };
     if (artistElement) {
         result['artist'] = artistElement.textContent || artistElement.innerText || '';
     }
